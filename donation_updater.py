@@ -1,4 +1,4 @@
-#Change this URL to the URL of the donation page. Ex:
+#Change this URL to the URL of the donation page:
 url = 'https://www.speedrun.com/mwsf2020/donate'
 
 #How many seconds in between updates. Don't crank this number low, SRC crashes enough as is
@@ -25,6 +25,10 @@ except ImportError:
 import os
 import requests
 import time
+import ctypes
+
+#sets nice title
+ctypes.windll.kernel32.SetConsoleTitleW("Donations Updater")
 
 #disable SSL warnings. SRC requires HTTPS but sometimes their certificate isn't "proper", this makes it connect
 import urllib3
@@ -35,13 +39,13 @@ def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
 #Plz no bully the SRC servers
+#If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
 if timewait < 60:
 	print ('Plz no bullying the SRC servers, 1 minute or more only kthx')
 	timewait = 60
 
 #They have set us up the loop
 while True:
-    # Code executed here
 		
 	try:
 		r = requests.get(url, verify=False)
