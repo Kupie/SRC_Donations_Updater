@@ -1,8 +1,8 @@
 #Change this URL to the URL of the donation page:
-url = 'https://www.speedrun.com/mwsf2020/donate'
+url = 'https://www.speedrun.com/mssf2020/donate'
 
 #How many seconds in between updates. Don't crank this number low, SRC crashes enough as is
-timewait = 60
+timewait = 120
 
 
 
@@ -44,16 +44,24 @@ if timewait < 60:
 	print ('Plz no bullying the SRC servers, 1 minute or more only kthx')
 	timewait = 60
 
+
+#If something contains these strings, then the goal/bidwar is closed 
+closedMatching = ["(Goal met!)", "(Closed)"]
+
 #They have set us up the loop
 while True:
 		
 	try:
-		r = requests.get(url, verify=False)
+		#Make the request to SRC, plus the "goals" and "bidwars" page
+		rtotal = requests.get(url, verify=False)
+		rgoals = requests.get(url + '/goals', verify=False)
+		rbids = requests.get(url + '/bidwars', verify=False)
 	except:
-		print ("Invalid URL. Open this python script and check that 2nd line! Exiting...")
+		#If it fails, URL is invalid... or SRC is down. That's always an option
+		print ("Invalid URL connection to SRC failed. Open this python script and check that 2nd line! Exiting...")
 		sys.exit(1)
 	
-	soup = BeautifulSoup(r.content,'html.parser')
+	soup = BeautifulSoup(rtotal.content,'html.parser')
 	span = soup.find('span', class_='donation-total')
 	
 	TotalValue = " $" + span.text
@@ -67,6 +75,38 @@ while True:
 	text_file.write(TotalRaisedText)
 	text_file.close()
 	
+	#Now begins the fucky stuff to update goals
+	bidsGoalsText = ''
+	soup = BeautifulSoup(rgoals.content,'html.parser')
+	div = soup.find('div', class_='panel panel-tabbed')
+	#print(div)
+	for a in div.find_all('p'):
+		#If bidwar/goal contains the closed text, do *not* add it to the main string
+		if any(x in a.text for x in closedMatching):
+			pass
+		else:
+			#print (a.text)
+			bidsGoalsText += a.text.strip() + ' | '
+			
+	
+	#Let's do bidwars now!
+	soup = BeautifulSoup(rbids.content,'html.parser')
+	div = soup.find('div', class_='maincontent')
+	#print(div)
+	for a in div.find_all('p'):
+	
+		if any(x in a.text for x in closedMatching):
+			pass
+		else:
+			#print (a.text)
+			bidsGoalsText += a.text.strip() + ' | '
+
+	#print(bidsGoalsText)
+	text_file = open("GoalsBidwars.txt", "w")
+	text_file.write(bidsGoalsText)
+	text_file.close()
+
+
 	#Wait "timewait" amount of seconds before running again
 	time.sleep(timewait)
 	cls()
