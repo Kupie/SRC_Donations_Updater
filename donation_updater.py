@@ -7,16 +7,16 @@ timewait = 120
 #Check python version
 import sys
 if sys.version_info < (3, 0):
-    sys.stdout.write("Sorry, requires Python 3.x, not Python 2.x\n")
-    sys.exit(1)
+	sys.stdout.write("Sorry, requires Python 3.x, not Python 2.x\n")
+	sys.exit(1)
 
 
 #Make sure BeautifulSoup is installed
 try:
 	from bs4 import BeautifulSoup
 except ImportError:
-    print ('Python module BeautifulSoup not installed, please run "pip install bs4" to install and then run this script again')
-    sys.exit(1)
+	print ('Python module BeautifulSoup not installed, please run "pip install bs4" to install and then run this script again')
+	sys.exit(1)
 
 import os
 import requests
@@ -32,7 +32,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #Makes a universal cls function to clear screen. Thanks popcnt: https://stackoverflow.com/a/684344
 def cls():
-    os.system('cls' if os.name=='nt' else 'clear')
+	os.system('cls' if os.name=='nt' else 'clear')
 
 #Plz no bully the SRC servers
 #If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
