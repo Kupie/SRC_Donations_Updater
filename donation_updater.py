@@ -1,10 +1,8 @@
 #Change this URL to the URL of the donation page:
-url = 'https://www.speedrun.com/mssf2020/donate'
+url = 'https://www.speedrun.com/mwsf2020/donate'
 
 #How many seconds in between updates. Don't crank this number low, SRC crashes enough as is
 timewait = 120
-
-
 
 #Check python version
 import sys
@@ -13,25 +11,23 @@ if sys.version_info < (3, 0):
     sys.exit(1)
 
 
-#Make sure modules are installed
+#Make sure BeautifulSoup is installed
 try:
 	from bs4 import BeautifulSoup
-	import urllib3
-	from lxml import html
 except ImportError:
-    print ('Required Python modules not installed, please run "pip install lxml bs4" to install and then run this script again')
+    print ('Python module BeautifulSoup not installed, please run "pip install bs4" to install and then run this script again')
     sys.exit(1)
 
 import os
 import requests
 import time
 import ctypes
+import urllib3
 
 #sets nice title
 ctypes.windll.kernel32.SetConsoleTitleW("Donations Updater")
 
 #disable SSL warnings. SRC requires HTTPS but sometimes their certificate isn't "proper", this makes it connect
-import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #Makes a universal cls function to clear screen. Thanks popcnt: https://stackoverflow.com/a/684344
