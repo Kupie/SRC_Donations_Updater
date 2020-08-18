@@ -2,7 +2,7 @@
 url = 'https://www.speedrun.com/mssf2020/donate'
 
 #How many seconds in between updates. Don't crank this number low, SRC crashes enough as is
-timewait = 120
+timewait = 5
 
 #Put the max goals and bids to combine into a string here
 maxgoals = 3
@@ -40,9 +40,6 @@ def cls():
 
 #Plz no bully the SRC servers
 #If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
-if timewait < 60:
-	print ('Plz no bullying the SRC servers, 1 minute or more only kthx')
-	timewait = 60
 
 
 #If something contains these strings, then the goal/bidwar is closed 
@@ -65,11 +62,20 @@ while True:
 	soup = BeautifulSoup(rtotal.content,'html.parser')
 	span = soup.find('span', class_='donation-total')
 	
-	TotalValue = " $" + span.text
-	TotalRaisedText = "Total Raised: $" + span.text
+	DonoTotal = span.text
+#	Used for testing different number values
+#	DonoTotal = '2000'
+	if len(DonoTotal) <= 2:
+		TotalValue = "   $" + DonoTotal
+	elif len(DonoTotal) >= 3:
+		TotalValue = "  $" + DonoTotal
+	else:
+		TotalValue = " $" + DonoTotal
+	TotalRaisedText = "Total Raised: $" + DonoTotal
 	print (TotalRaisedText)
 	print ('Waiting ' + str(timewait) + ' seconds to run again...')
 	text_file = open("Totals.txt", "w")
+	
 	text_file.write(TotalValue)
 	text_file.close()
 	text_file = open("TotalRaised.txt", "w")
