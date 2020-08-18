@@ -1,8 +1,12 @@
 #Change this URL to the URL of the donation page:
-url = 'https://www.speedrun.com/mwsf2020/donate'
+url = 'https://www.speedrun.com/mssf2020/donate'
 
 #How many seconds in between updates. Don't crank this number low, SRC crashes enough as is
 timewait = 120
+
+#Put the max goals and bids to combine into a string here
+maxgoals = 3
+maxbids = 3
 
 #Check python version
 import sys
@@ -42,6 +46,7 @@ if timewait < 60:
 
 
 #If something contains these strings, then the goal/bidwar is closed 
+closedMatching = []
 closedMatching = ["(Goal met!)", "(Closed)"]
 
 #They have set us up the loop
@@ -73,37 +78,41 @@ while True:
 	
 	#Now begins the fucky stuff to update goals
 	bidsGoalsText = ''
-	soup = BeautifulSoup(rgoals.content,'html.parser')
+	soup = BeautifulSoup(rgoals.content,'lxml')
 	div = soup.find('div', class_='panel panel-tabbed')
 	#print(div)
+	dex = 1
 	for a in div.find_all('p'):
 		#If bidwar/goal contains the closed text, do *not* add it to the main string
-		if any(x in a.text for x in closedMatching):
+		if any(x in a.text for x in closedMatching) or dex > maxgoals:
 			pass
 		else:
 			#print (a.text)
 			bidsGoalsText += a.text.strip() + ' | '
+			dex += 1
 			
 	
 	#Let's do bidwars now!
-	soup = BeautifulSoup(rbids.content,'html.parser')
+	soup = BeautifulSoup(rbids.content,'lxml')
 	div = soup.find('div', class_='maincontent')
 	#print(div)
+	dex = 1
 	for a in div.find_all('p'):
 	
-		if any(x in a.text for x in closedMatching):
+		if any(x in a.text for x in closedMatching) or dex > maxbids:
 			pass
 		else:
 			#print (a.text)
 			bidsGoalsText += a.text.strip() + ' | '
+			dex += 1
 
-	#print(bidsGoalsText)
+	print(bidsGoalsText)
 	text_file = open("GoalsBidwars.txt", "w")
-	text_file.write(bidsGoalsText)
+	#This removes unprintable characters, preventing weird shit from showing up
+	text_file.write(bidsGoalsText.encode("ascii", errors="ignore").decode())
 	text_file.close()
 
 
 	#Wait "timewait" amount of seconds before running again
 	time.sleep(timewait)
 	cls()
-
