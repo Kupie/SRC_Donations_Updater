@@ -47,10 +47,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def cls():
 	os.system('cls' if os.name=='nt' else 'clear')
 
-#Plz no bully the SRC servers
-#If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
-
-
 #If something contains these strings, then the goal/bidwar is closed 
 closedMatching = []
 closedMatching = ["(Goal met!)", "(Closed)"]
