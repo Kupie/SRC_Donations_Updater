@@ -1,5 +1,5 @@
 #Change this URL to the URL of the donation page:
-url = 'https://www.speedrun.com/mwsf2020/donate'
+url = 'https://www.speedrun.com/mfsb2020/donate'
 
 #How many seconds in between updates. Don't crank this number too low, SRC crashes enough as is
 timewait = 15
@@ -9,7 +9,7 @@ timewait = 15
 ReverseIterate = True
 
 #Manually adjust donations by this much. For example "200" would add 200 to the total at the end
-#currently untested, last time it was used this added 50 bucks every update so it needs work lol
+#currently doesn't work
 Donations_Adjust = 0
 
 #Put the max goals and bids to combine into a string here
@@ -47,12 +47,16 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def cls():
 	os.system('cls' if os.name=='nt' else 'clear')
 
+#Plz no bully the SRC servers
+#If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
+
+
 #If something contains these strings, then the goal/bidwar is closed 
 closedMatching = []
-closedMatching = ["(Goal met!)", "(Closed)"]
+closedMatching = ["(Goal met!)", "(Closed)", "No bid wars yet. This page is hidden until some are added.","No goals yet. This page is hidden until some are added."]
 
 #initial donations total setting
-DonoTotal = '3852'
+DonoTotal = '0'
 
 #They have set us up the loop
 while True:
@@ -79,10 +83,14 @@ while True:
 	
 #	Used for testing different number values
 #	DonoTotal = '2000'
-	if len(DonoTotal) <= 2:
+	if len(DonoTotal) == 1:
+		TotalValue = "      $" + DonoTotal
+	elif len(DonoTotal) == 2:
+		TotalValue = "     $" + DonoTotal
+	elif len(DonoTotal) == 3:
+		TotalValue = "    $" + DonoTotal
+	elif len(DonoTotal) == 4:
 		TotalValue = "   $" + DonoTotal
-	elif len(DonoTotal) >= 3:
-		TotalValue = "  $" + DonoTotal
 	else:
 		TotalValue = " $" + DonoTotal
 	TotalRaisedText = "Total Raised: $" + DonoTotal
