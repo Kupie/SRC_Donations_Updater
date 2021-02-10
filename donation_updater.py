@@ -1,5 +1,5 @@
 #Change this URL to the URL of the donation page:
-url = 'https://www.speedrun.com/mfsb2020/donate'
+url = 'https://www.speedrun.com/firstry_2021/donate'
 
 #How many seconds in between updates. Don't crank this number too low, SRC crashes enough as is
 timewait = 15
@@ -23,11 +23,30 @@ if sys.version_info < (3, 0):
 	sys.exit(1)
 
 
+#Make sure browser_cookie3 is installed
+try:
+	import browser_cookie3
+except ImportError:
+	print ('Python module browser_cookie3 not installed, please run "pip install browser_cookie3" to install and then run this script again')
+	sys.exit(1)
+
+
+
+cookiejar = browser_cookie3.firefox(domain_name='speedrun.com')
+
+
 #Make sure BeautifulSoup is installed
 try:
 	from bs4 import BeautifulSoup
 except ImportError:
 	print ('Python module BeautifulSoup not installed, please run "pip install bs4" to install and then run this script again')
+	sys.exit(1)
+
+#Make sure lxml is installed
+try:
+	import lxml
+except ImportError:
+	print ('Python module lxml not installed, please run "pip install lxml" to install and then run this script again')
 	sys.exit(1)
 
 from datetime import datetime
@@ -51,9 +70,9 @@ def cls():
 #If you're bright enough to remove this, you're bright enough to know we don't need faster than 1 minute updates
 
 
-#If something contains these strings, then the goal/bidwar is closed 
+#If something contains these strings, filter them out
 closedMatching = []
-closedMatching = ["(Goal met!)", "(Closed)", "No bid wars yet. This page is hidden until some are added.","No goals yet. This page is hidden until some are added."]
+closedMatching = ["(Goal met!)", "(Closed)", "No bid wars yet. This page is hidden until some are added.","No goals yet. This page is hidden until some are added.","Add bidwar","Add goal"]
 
 #initial donations total setting
 DonoTotal = '0'
@@ -62,9 +81,9 @@ DonoTotal = '0'
 while True:
 	try:
 		#Make the request to SRC, plus the "goals" and "bidwars" page
-		rtotal = requests.get(url + '/donations', verify=False)
-		rgoals = requests.get(url + '/goals', verify=False)
-		rbids = requests.get(url + '/bidwars', verify=False)
+		rtotal = requests.get(url + '/donations', verify=False, cookies=cookiejar)
+		rgoals = requests.get(url + '/goals', verify=False, cookies=cookiejar)
+		rbids = requests.get(url + '/bidwars', verify=False, cookies=cookiejar)
 	except:
 		#If it fails, URL is invalid... or SRC is down. That's always an option
 		print ("Invalid URL connection to SRC failed. Open this python script and check that 2nd line! Exiting...")
@@ -126,7 +145,7 @@ while True:
 	#Let's do bidwars now!
 	soup = BeautifulSoup(rbids.content,'lxml')
 	div = soup.find('div', class_='maincontent')
-	#print(div)
+#	print(div)
 	dex = 1
 	if ReverseIterate:
 		divfind = reversed(div.find_all('p'))
